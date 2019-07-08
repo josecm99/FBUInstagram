@@ -11,12 +11,14 @@ import android.widget.EditText;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText etUsername;
     private EditText etPassword;
     private Button btnLogin;
+    private Button btnSignup;
 
 
     @Override
@@ -38,8 +40,49 @@ public class LoginActivity extends AppCompatActivity {
                 login(username, password);
             }// end onClick
         });
+        
+        btnSignup = (Button) findViewById(R.id.btnSignup);
+        
+        btnSignup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String username = etUsername.getText().toString();
+                final String password = etPassword.getText().toString();
+                
+                signup(username, password);
+            }
+        });
 
     }// end onCreate
+
+    private void signup(String username, String password) {
+
+        ParseUser user = new ParseUser();
+
+        //Set core properties of User
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setEmail("jcruz99@fb.com");
+
+        user.signUpInBackground(new SignUpCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null){
+                    Log.d("LoginActivity", "Signup Successful! :)");
+
+                    //If the login was successful, let us move to the HomeActivity
+                    Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
+                    startActivity(homeIntent);
+                    finish();
+
+                }else{
+                    Log.e("LoginActivity","Something went poopy in the sign up :' )");
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
 
 
     private void login(String username, String password){
