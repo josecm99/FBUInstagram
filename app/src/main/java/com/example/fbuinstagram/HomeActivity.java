@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.example.fbuinstagram.models.Post;
 import com.parse.FindCallback;
@@ -15,15 +14,14 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
-import java.io.File;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
     private static final String IMAGE_PATH = "~/Desktop/ConductorDog.jpeg";
-    private EditText etDescription;
     private Button btnCreate;
     private Button btnRefresh;
+    private Button btnLogout;
 
 
     @Override
@@ -31,7 +29,6 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        etDescription = (EditText) findViewById(R.id.etDescription);
 
         //Initialize a create button and set an onClickListener
         btnCreate = (Button) findViewById(R.id.btnCreate);
@@ -39,13 +36,14 @@ public class HomeActivity extends AppCompatActivity {
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String description = etDescription.getText().toString();
-                final ParseUser currUser = ParseUser.getCurrentUser();
-
-                final File file = new File(IMAGE_PATH);
-                final ParseFile parseFile = new ParseFile(file);
-
-                createPost(description, parseFile, currUser);
+                // TODO MAKE SURE TO CHANGE THIS ALL LATER
+//                final String description = etDescription.getText().toString();
+//                final ParseUser currUser = ParseUser.getCurrentUser();
+//
+//                final File file = new File(IMAGE_PATH);
+//                final ParseFile parseFile = new ParseFile(file);
+//
+//                createPost(description, parseFile, currUser);
             }
         });
 
@@ -56,6 +54,18 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loadTopPosts();
+            }
+        });
+
+
+        //Initialize logout button and set onClickListener
+        btnLogout = (Button) findViewById(R.id.btnLogout);
+
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ParseUser.logOut();
+                finish();
             }
         });
 

@@ -96,7 +96,9 @@ public class LoginActivity extends AppCompatActivity {
                     //If the login was successful, let us move to the HomeActivity
                     Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
                     startActivity(homeIntent);
-                    finish();
+
+                    etUsername.setText("");
+                    etPassword.setText("");
 
 
                 }// end if
