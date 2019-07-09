@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -48,11 +49,12 @@ public class HomeActivity extends AppCompatActivity {
     File photoFile;
 
     //Information used for the RecyclerView
-    RecyclerView rvPosts;
+    private RecyclerView rvPosts;
+    private ArrayList<Post> posts;
+    private PostAdapter adapter;
+    private SwipeRefreshLayout swipeContainer;
 
-    ArrayList<Post> posts;
 
-    PostAdapter adapter;
 
 
     @Override
@@ -70,17 +72,6 @@ public class HomeActivity extends AppCompatActivity {
 
                 Log.d(APP_TAG, "About to launch camera");
                 onLaunchCamera();
-            }
-        });
-
-
-        //Initialize refresh button and set an onClickListener
-        btnRefresh = (Button) findViewById(R.id.btnRefresh);
-
-        btnRefresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadTopPosts();
             }
         });
 
@@ -121,9 +112,37 @@ public class HomeActivity extends AppCompatActivity {
 
         rvPosts.setLayoutManager(new LinearLayoutManager(this) );
 
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchTimelineAsync(0);
+            }
+        });
+
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
 
 
     }// end onCreate
+
+
+    public void fetchTimelineAsync(int page) {
+        // Send the network request to fetch the updated data
+
+        //TODO - Fetch the new information from Parse to populate the screen with updated information :)
+
+        //Start by clearing what is currently in the posts list
+        adapter.clear();
+        loadTopPosts();
+        swipeContainer.setRefreshing(false);
+
+    }
 
 
 
@@ -175,7 +194,7 @@ public class HomeActivity extends AppCompatActivity {
                 Toast.makeText(HomeActivity.this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
 
-        }// end if check
+        }// end if check for CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE
 
         else if (requestCode == POST_CREATION_REQUEST_CODE){
             if (resultCode == RESULT_OK){
@@ -191,9 +210,9 @@ public class HomeActivity extends AppCompatActivity {
 
                 // Configure byte output stream
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-// Compress the image further
+                // Compress the image further
                 resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
-// Create a new file for the resized bitmap (`getPhotoFileUri` defined above)
+                // Create a new file for the resized bitmap (`getPhotoFileUri` defined above)
                 File resizedFile = getPhotoFile(photoFileName + "_resized");
                 try {
                     resizedFile.createNewFile();
@@ -206,7 +225,7 @@ public class HomeActivity extends AppCompatActivity {
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-// Write the bytes of the bitmap to file
+                // Write the bytes of the bitmap to file
                 try {
                     fos.write(bytes.toByteArray());
                 } catch (IOException e) {
@@ -231,12 +250,9 @@ public class HomeActivity extends AppCompatActivity {
                 ParseFile parseFile = new ParseFile(resizedFile);
                 createPost(caption, parseFile, user);
 
-            }
-//            else if (resultCode == RESULT_CANCELED){
-//
-//            }
+            }// end if check for RESULT_OK
 
-        }// end other if check
+        }// end if check for POST_CREATION_REQUEST_CODE
 
     }// end onActivityResult
 
