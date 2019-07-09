@@ -10,6 +10,8 @@ import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +29,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
@@ -44,6 +47,13 @@ public class HomeActivity extends AppCompatActivity {
     public String photoFileName = "photo.jpg";
     File photoFile;
 
+    //Information used for the RecyclerView
+    RecyclerView rvPosts;
+
+    ArrayList<Post> posts;
+
+    PostAdapter adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,20 +67,12 @@ public class HomeActivity extends AppCompatActivity {
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO MAKE SURE TO CHANGE THIS ALL LATER
 
                 Log.d(APP_TAG, "About to launch camera");
                 onLaunchCamera();
-
-//                final String description = etDescription.getText().toString();
-//                final ParseUser currUser = ParseUser.getCurrentUser();
-//
-//                final File file = new File(IMAGE_PATH);
-//                final ParseFile parseFile = new ParseFile(file);
-//
-//                createPost(description, parseFile, currUser);
             }
         });
+
 
         //Initialize refresh button and set an onClickListener
         btnRefresh = (Button) findViewById(R.id.btnRefresh);
@@ -103,7 +105,24 @@ public class HomeActivity extends AppCompatActivity {
         getSupportActionBar().setLogo(R.drawable.nav_logo_whiteout);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
 
+
+        //Setup for the RecyclerView
+        rvPosts = findViewById(R.id.rvPosts);
+
+        posts = new ArrayList<>();
+        adapter = new PostAdapter(posts);
+
+        //Loading all the posts after having created the adapter
+            //Making sure to notify adapter of insertions
         loadTopPosts();
+
+
+        rvPosts.setAdapter(adapter);
+
+        rvPosts.setLayoutManager(new LinearLayoutManager(this) );
+
+
+
     }// end onCreate
 
 
@@ -145,7 +164,7 @@ public class HomeActivity extends AppCompatActivity {
                 Log.d(APP_TAG, "Result was OK and we should have gotten an image");
 
                 Log.d(APP_TAG, "Boutta blast an intent");
-                Intent postCreationIntent = new Intent(this, PostCreationActivity.class);
+                Intent postCreationIntent = new Intent(HomeActivity.this, PostCreationActivity.class);
 
                 postCreationIntent.putExtra("URI", photoFile.getAbsolutePath() );
 
@@ -153,7 +172,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
             } else { // Result was a failure
-                Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeActivity.this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
 
         }// end if check
@@ -274,6 +293,12 @@ public class HomeActivity extends AppCompatActivity {
             public void done(List<Post> objects, ParseException e) {
                 if (e == null){
                     for(int i =0; i < objects.size(); i++) {
+
+                        //Add to the posts list and make sure to notify the adapter
+                        posts.add(objects.get(i) );
+                        adapter.notifyItemInserted(posts.size() - 1);
+
+
                         Log.d("HomeActivity", "Post ID: "
                                 + objects.get(i).getDescription()
                                 + "\tUsername: " + objects.get(i).getUser().getUsername() );
