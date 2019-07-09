@@ -53,6 +53,17 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        //If the current user is not null when the Activity is being created, just send them
+            //to their HomeActivity directly. No need to login again :)
+        if (currentUser != null){
+            Intent homeIntent = new Intent(this, HomeActivity.class);
+            startActivity(homeIntent);
+        }// end if
+
+        //Otherwise, work with what we have here as normal :)
+
+
     }// end onCreate
 
     private void signup(String username, String password) {
