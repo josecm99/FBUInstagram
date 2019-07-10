@@ -286,6 +286,12 @@ public class HomeActivity extends AppCompatActivity {
         newPost.setImage(imageFile);
         newPost.setUser(user);
 
+        //Also make sure to add the post manually to the list so that we can see it right away :)
+        posts.add(0, newPost);
+        adapter.notifyItemInserted(0);
+        rvPosts.scrollToPosition(0);
+
+
         newPost.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
