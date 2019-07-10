@@ -322,7 +322,7 @@ public class HomeActivity extends AppCompatActivity {
                         Log.d("HomeActivity", "Post ID: "
                                 + objects.get(i).getDescription()
                                 + "\tUsername: " + objects.get(i).getUser().getUsername()
-                                + "\tCreated at: " + objects.get(i).getCreatedAt()); //TODO - LOOK AT THIS
+                                + "\tCreated at: " + objects.get(i).getCreatedAt());
                     }// end for
 
                 }
