@@ -110,7 +110,9 @@ public class HomeActivity extends AppCompatActivity {
 
         rvPosts.setAdapter(adapter);
 
-        rvPosts.setLayoutManager(new LinearLayoutManager(this) );
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+
+        rvPosts.setLayoutManager(layoutManager);
 
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
 
@@ -118,6 +120,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 fetchTimelineAsync(0);
+
             }
         });
 
@@ -302,7 +305,8 @@ public class HomeActivity extends AppCompatActivity {
         final Post.Query postsQuery = new Post.Query();
         postsQuery
                 .getTopPosts()
-                .withUser();
+                .withUser()
+                .orderByDescending("createdAt");
 
         postsQuery.findInBackground(new FindCallback<Post>() {
             @Override
@@ -317,7 +321,8 @@ public class HomeActivity extends AppCompatActivity {
 
                         Log.d("HomeActivity", "Post ID: "
                                 + objects.get(i).getDescription()
-                                + "\tUsername: " + objects.get(i).getUser().getUsername() );
+                                + "\tUsername: " + objects.get(i).getUser().getUsername()
+                                + "\tCreated at: " + objects.get(i).getCreatedAt()); //TODO - LOOK AT THIS
                     }// end for
 
                 }

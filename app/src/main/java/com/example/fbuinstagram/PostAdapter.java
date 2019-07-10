@@ -1,8 +1,11 @@
 package com.example.fbuinstagram;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +15,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.fbuinstagram.models.Post;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
@@ -81,7 +87,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public ImageView ivImage;
         public TextView tvDescription;
@@ -92,9 +98,54 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
             ivImage = (ImageView) itemView.findViewById(R.id.ivImage);
             tvDescription = (TextView) itemView.findViewById(R.id.tvDescription);
+
+            itemView.setOnClickListener(this);
         }
 
 
-    }
+        @Override
+        public void onClick(View v) {
+
+            int currPosition = getAdapterPosition();
+            Post currPost = mPosts.get(currPosition);
+
+            //When the item is clicked, make sure to open up the PostDetailsActivity via an Intent
+            Intent postDetailsIntent = new Intent(mContext, PostDetailsActivity.class);
+
+            /*Make sure to put in the necessary information into the intent:
+                -URI for photo
+                -Caption
+                -Timestamp (Relative Timestamp)
+                -TODO - Maybe later throw in User and stuff also :)
+            */
+
+            postDetailsIntent.putExtra("photo", currPost.getImage().getUrl() );
+            postDetailsIntent.putExtra("caption", currPost.getDescription() );
+            postDetailsIntent.putExtra("timestamp", getRelativeTimeAgo(currPost.getCreatedAt().toString() ) );
+
+            Log.d("PostAdapter", currPost.getCreatedAt().toString());
+
+            mContext.startActivity(postDetailsIntent);
+
+        }// end onClick
+    }// end ViewHolder inner class
+
+
+    public String getRelativeTimeAgo(String rawJsonDate) {
+        String parseFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+        SimpleDateFormat sf = new SimpleDateFormat(parseFormat, Locale.ENGLISH);
+        sf.setLenient(true);
+
+        String relativeDate = "";
+        try {
+            long dateMillis = sf.parse(rawJsonDate).getTime();
+            relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
+                    System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return relativeDate;
+    } // end getRelativeTimeAgo
 
 }
