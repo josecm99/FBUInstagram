@@ -64,7 +64,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
         Glide.with(mContext)
                 .load(currPost.getImage().getUrl() )
-                .override(250, 200)
                 .into(viewHolder.ivImage);
 
     }
