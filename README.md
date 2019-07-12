@@ -48,7 +48,7 @@ since Parse is deprecated.
 
 Here's a walkthrough of implemented user stories:
 
-![Walkthrough](InstagramGIF.gif)
+![Walkthrough](InstagramGIF_updated.gif)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
