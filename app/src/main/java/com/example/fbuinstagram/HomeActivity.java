@@ -35,15 +35,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationHomeCal
         fragmentManager = getSupportFragmentManager();
 
 
-        getSupportActionBar().setTitle("");
-
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setLogo(R.drawable.nav_logo_whiteout);
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
-
-        getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.login_gradient) );
+        initializeActionBar();
 
 
+        initializeBottomNavigationView();
+
+
+    }// end onCreate
+
+    private void initializeBottomNavigationView() {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -83,9 +83,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationHomeCal
 
         //Setting default selected item
         bottomNavigationView.setSelectedItemId(R.id.action_home);
+    }
 
+    private void initializeActionBar() {
+        getSupportActionBar().setTitle("");
 
-    }// end onCreate
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.drawable.nav_logo_whiteout);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+
+        getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.login_gradient) );
+    }
 
 
     @Override

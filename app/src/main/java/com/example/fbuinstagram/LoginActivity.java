@@ -29,29 +29,7 @@ public class LoginActivity extends AppCompatActivity {
         etUsername = (EditText) findViewById(R.id.etUsername);
         etPassword = (EditText) findViewById(R.id.etPassword);
 
-        btnLogin = (Button) findViewById(R.id.btnLogin);
-
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String username = etUsername.getText().toString();
-                final String password = etPassword.getText().toString();
-
-                login(username, password);
-            }// end onClick
-        });
-        
-        btnSignup = (Button) findViewById(R.id.btnSignup);
-        
-        btnSignup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String username = etUsername.getText().toString();
-                final String password = etPassword.getText().toString();
-                
-                signup(username, password);
-            }
-        });
+        setupButtons();
 
         ParseUser currentUser = ParseUser.getCurrentUser();
         //If the current user is not null when the Activity is being created, just send them
@@ -65,6 +43,32 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }// end onCreate
+
+    private void setupButtons() {
+        btnLogin = (Button) findViewById(R.id.btnLogin);
+
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String username = etUsername.getText().toString();
+                final String password = etPassword.getText().toString();
+
+                login(username, password);
+            }// end onClick
+        });
+
+        btnSignup = (Button) findViewById(R.id.btnSignup);
+
+        btnSignup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String username = etUsername.getText().toString();
+                final String password = etPassword.getText().toString();
+
+                signup(username, password);
+            }
+        });
+    }
 
     private void signup(String username, String password) {
 

@@ -50,22 +50,7 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
-        rvPosts = view.findViewById(R.id.rvPosts);
-
-        posts = new ArrayList<>();
-        adapter = new PostAdapter(posts);
-
-        loadTopPosts(FIRST_PAGE);
-
-
-        rvPosts.setAdapter(adapter);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity() );
-
-        rvPosts.setLayoutManager(layoutManager);
-
-        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
-
+        LinearLayoutManager layoutManager = setupRecyclerView(view);
 
 
 
@@ -80,6 +65,13 @@ public class HomeFragment extends Fragment {
 
         rvPosts.addOnScrollListener(scrollListener);
 
+
+        setupSwipeRefreshLayout(view);
+    }
+
+    private void setupSwipeRefreshLayout(@NonNull View view) {
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -93,6 +85,23 @@ public class HomeFragment extends Fragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+    }
+
+    private LinearLayoutManager setupRecyclerView(@NonNull View view) {
+        rvPosts = view.findViewById(R.id.rvPosts);
+
+        posts = new ArrayList<>();
+        adapter = new PostAdapter(posts);
+
+        loadTopPosts(FIRST_PAGE);
+
+
+        rvPosts.setAdapter(adapter);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity() );
+
+        rvPosts.setLayoutManager(layoutManager);
+        return layoutManager;
     }
 
     public void fetchTimelineAsync(int page) {

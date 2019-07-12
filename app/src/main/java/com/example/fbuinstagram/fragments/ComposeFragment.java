@@ -75,6 +75,13 @@ public class ComposeFragment extends Fragment {
         Log.d(APP_TAG, "Inside onViewCreated");
 
 
+        setBtnPostListener();
+
+        onLaunchCamera();
+
+    }
+
+    private void setBtnPostListener() {
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,21 +109,11 @@ public class ComposeFragment extends Fragment {
 
 
                         navigateHome.returnHome();
-
-//                    HomeFragment homeFragment = new HomeFragment();
-//                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                    fragmentTransaction.replace(R.id.flContainer, homeFragment);
-//                    fragmentTransaction.addToBackStack(null);
-//                    fragmentTransaction.commit();
                     }
                 }
 
             }
         });
-
-        onLaunchCamera();
-
     }
 
 
@@ -163,65 +160,53 @@ public class ComposeFragment extends Fragment {
                 // See BitmapScaler.java: https://gist.github.com/nesquena/3885707fd3773c09f1bb
                 Bitmap resizedBitmap = BitmapScaler.scaleToFitWidth(takenImage, WIDTH);
 
+                createResizedFile(resizedBitmap);
 
-                // Configure byte output stream
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                // Compress the image further
-                resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
-                // Create a new file for the resized bitmap (`getPhotoFileUri` defined above)
-                resizedFile = getPhotoFile(photoFileName + "_resized");
-                try {
-                    resizedFile.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                FileOutputStream fos = null;
-                try {
-                    fos = new FileOutputStream(resizedFile);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                // Write the bytes of the bitmap to file
-                try {
-                    fos.write(bytes.toByteArray());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
                 ivImage.setImageBitmap(resizedBitmap);
 
                 Log.d(APP_TAG, "Set up the image bitmap");
 
 
-
-
-//                //Will now use createPost to actually put the Post on our Parse backend
-//                String caption = data.getExtras().getString("caption");
-//
-//                //Also make sure to get the current user
-//                ParseUser user = ParseUser.getCurrentUser();
-//
-//                //And turn the File into a ParseFile
-//                ParseFile parseFile = new ParseFile(resizedFile);
-//                createPost(caption, parseFile, user);
-
-
-
             } else { // Result was a failure
                 Toast.makeText(getActivity(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
-
-                //TODO - Make sure to send the user back to the home screen in this case ALSO
-
+                navigateHome.returnHome();
             }
 
         }// end if check for CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE
 
     }// end onActivityResult
+
+    private void createResizedFile(Bitmap resizedBitmap) {
+        // Configure byte output stream
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        // Compress the image further
+        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
+        // Create a new file for the resized bitmap (`getPhotoFileUri` defined above)
+        resizedFile = getPhotoFile(photoFileName + "_resized");
+        try {
+            resizedFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(resizedFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // Write the bytes of the bitmap to file
+        try {
+            fos.write(bytes.toByteArray());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public void setInterface(NavigationHomeCallback navigateHome){
