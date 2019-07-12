@@ -77,7 +77,6 @@ public class LoginActivity extends AppCompatActivity {
         //Set core properties of User
         user.setUsername(username);
         user.setPassword(password);
-        user.setEmail("jcruz99@fb.com");
 
         user.signUpInBackground(new SignUpCallback() {
             @Override
