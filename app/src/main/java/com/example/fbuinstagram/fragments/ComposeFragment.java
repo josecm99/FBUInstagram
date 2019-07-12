@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.example.fbuinstagram.BitmapScaler;
 import com.example.fbuinstagram.R;
-import com.example.fbuinstagram.interfaces.ReturnHomeInterface;
+import com.example.fbuinstagram.interfaces.NavigationHomeCallback;
 import com.example.fbuinstagram.models.Post;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -53,7 +53,7 @@ public class ComposeFragment extends Fragment {
     File photoFile;
     File resizedFile;
 
-    ReturnHomeInterface clickInterface;
+    NavigationHomeCallback navigateHome;
 
 
 
@@ -70,11 +70,6 @@ public class ComposeFragment extends Fragment {
         ivImage = (ImageView) view.findViewById(R.id.ivImage);
         etDescription = (EditText) view.findViewById(R.id.etDescription);
         btnPost = (Button) view.findViewById(R.id.btnPost);
-
-
-        //TODO - Try and see how to do this
-//        setInterface(HomeActivity);
-
 
 
         Log.d(APP_TAG, "Inside onViewCreated");
@@ -105,10 +100,8 @@ public class ComposeFragment extends Fragment {
                         etDescription.setText("");
                         ivImage.setImageResource(0);
 
-                        //TODO - Code to take me from this fragment to the home fragment right away (CHECK IF WORKS)
-                        Log.d(APP_TAG, "About to try usage of interface");
 
-//                    clickInterface.buttonClicked();
+                        navigateHome.returnHome();
 
 //                    HomeFragment homeFragment = new HomeFragment();
 //                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -231,8 +224,8 @@ public class ComposeFragment extends Fragment {
     }// end onActivityResult
 
 
-    public void setInterface(ReturnHomeInterface clickInterface){
-        this.clickInterface = clickInterface;
+    public void setInterface(NavigationHomeCallback navigateHome){
+        this.navigateHome = navigateHome;
     }
 
 

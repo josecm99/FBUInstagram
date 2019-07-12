@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(homeIntent);
         }// end if
 
-        //Otherwise, work with what we have here as normal :)
+        getSupportActionBar().hide();
 
 
     }// end onCreate

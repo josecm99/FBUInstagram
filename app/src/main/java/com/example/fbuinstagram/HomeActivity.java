@@ -13,9 +13,9 @@ import android.widget.Toast;
 import com.example.fbuinstagram.fragments.ComposeFragment;
 import com.example.fbuinstagram.fragments.HomeFragment;
 import com.example.fbuinstagram.fragments.ProfileFragment;
-import com.example.fbuinstagram.interfaces.ReturnHomeInterface;
+import com.example.fbuinstagram.interfaces.NavigationHomeCallback;
 
-public class HomeActivity extends AppCompatActivity implements ReturnHomeInterface {
+public class HomeActivity extends AppCompatActivity implements NavigationHomeCallback {
 
     private static final String APP_TAG = "HomeActivity";
 
@@ -41,6 +41,8 @@ public class HomeActivity extends AppCompatActivity implements ReturnHomeInterfa
         getSupportActionBar().setLogo(R.drawable.nav_logo_whiteout);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
 
+        getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.login_gradient) );
+
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
@@ -50,18 +52,23 @@ public class HomeActivity extends AppCompatActivity implements ReturnHomeInterfa
 
                 switch(menuItem.getItemId()){
                     case R.id.action_home:
-                        currFragment = new HomeFragment();
-                        Toast.makeText(HomeActivity.this, "Home!", Toast.LENGTH_SHORT).show();
+                        if ( !(currFragment instanceof HomeFragment) ){
+                            currFragment = new HomeFragment();
+                        }
                         break;
 
                     case R.id.action_compose:
-                        currFragment = new ComposeFragment();
-                        Toast.makeText(HomeActivity.this, "Compose!", Toast.LENGTH_SHORT).show();
+                        if ( !(currFragment instanceof ComposeFragment) ){
+                            currFragment = new ComposeFragment();
+                            ((ComposeFragment) currFragment).setInterface(HomeActivity.this);
+                        }
                         break;
 
+
                     case R.id.action_profile:
-                        currFragment = new ProfileFragment();
-                        Toast.makeText(HomeActivity.this, "Profile!", Toast.LENGTH_SHORT).show();
+                        if ( !(currFragment instanceof ProfileFragment) ){
+                            currFragment = new ProfileFragment();
+                        }
                         break;
 
                     default:
@@ -82,7 +89,7 @@ public class HomeActivity extends AppCompatActivity implements ReturnHomeInterfa
 
 
     @Override
-    public void buttonClicked() {
+    public void returnHome() {
         Log.d(APP_TAG, "Hey so I actually ended up in my Activity like I should have! :))");
         bottomNavigationView.setSelectedItemId(R.id.action_home);
     }

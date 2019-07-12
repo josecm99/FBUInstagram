@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.example.fbuinstagram.PostAdapter;
 import com.example.fbuinstagram.R;
+import com.example.fbuinstagram.abstract_classes.EndlessRecyclerViewScrollListener;
 import com.example.fbuinstagram.models.Post;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -24,11 +25,17 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
 
+    private static final String APP_TAG = "HomeFragment";
+    public static final int FIRST_PAGE = 0;
+
     //Information used for the RecyclerView
     private RecyclerView rvPosts;
     private ArrayList<Post> posts;
     private PostAdapter adapter;
     private SwipeRefreshLayout swipeContainer;
+
+    private EndlessRecyclerViewScrollListener scrollListener;
+
 
 
     @Nullable
@@ -48,7 +55,7 @@ public class HomeFragment extends Fragment {
         posts = new ArrayList<>();
         adapter = new PostAdapter(posts);
 
-        loadTopPosts();
+        loadTopPosts(FIRST_PAGE);
 
 
         rvPosts.setAdapter(adapter);
@@ -59,10 +66,24 @@ public class HomeFragment extends Fragment {
 
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
 
+
+
+
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                loadTopPosts(page);
+            }
+        };
+
+        rvPosts.addOnScrollListener(scrollListener);
+
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                fetchTimelineAsync();
+                fetchTimelineAsync(FIRST_PAGE);
 
             }
         });
@@ -74,23 +95,25 @@ public class HomeFragment extends Fragment {
                 android.R.color.holo_red_light);
     }
 
-    public void fetchTimelineAsync() {
+    public void fetchTimelineAsync(int page) {
         // Send the network request to fetch the updated data
 
         //Start by clearing what is currently in the posts list
         adapter.clear();
-        loadTopPosts();
+        loadTopPosts(page);
         swipeContainer.setRefreshing(false);
 
     }
 
 
-    private void loadTopPosts() {
+    private void loadTopPosts(int page) {
 
         final Post.Query postsQuery = new Post.Query();
         postsQuery
                 .getTopPosts()
                 .withUser()
+                .setLimit(20)
+                .setSkip(page * 20)
                 .orderByDescending("createdAt");
 
         postsQuery.findInBackground(new FindCallback<Post>() {

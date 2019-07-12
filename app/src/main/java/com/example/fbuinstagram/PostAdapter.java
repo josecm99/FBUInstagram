@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,18 +110,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             //When the item is clicked, make sure to open up the PostDetailsActivity via an Intent
             Intent postDetailsIntent = new Intent(mContext, PostDetailsActivity.class);
 
-            /*Make sure to put in the necessary information into the intent:
-                -URI for photo
-                -Caption
-                -Timestamp (Relative Timestamp)
-                -TODO - Maybe later throw in User and stuff also :)
-            */
-
             postDetailsIntent.putExtra("photo", currPost.getImage().getUrl() );
             postDetailsIntent.putExtra("caption", currPost.getDescription() );
             postDetailsIntent.putExtra("timestamp", getRelativeTimeAgo(currPost.getCreatedAt().toString() ) );
-
-            Log.d("PostAdapter", currPost.getCreatedAt().toString());
 
             mContext.startActivity(postDetailsIntent);
 
